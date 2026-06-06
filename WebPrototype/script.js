@@ -214,8 +214,57 @@ function createProductCard(product) {
     card.querySelector('.add-to-cart-btn').addEventListener('click', () => {
         addToCart(product);
     });
+
+    // View details button listener
+    card.querySelector('.view-details-btn').addEventListener('click', () => {
+        showProductDetails(product);
+    });
     
     return card;
+}
+
+/**
+ * Shows a modal with the selected product details
+ * @param {Object} product - Product object
+ */
+function showProductDetails(product) {
+    const modal = document.createElement('div');
+    modal.className = 'product-details-modal';
+    modal.innerHTML = `
+        <div class="details-dialog" role="dialog" aria-modal="true" aria-label="Product details">
+            <button class="details-close" aria-label="Close product details">&times;</button>
+            <div class="details-header">
+                <div class="details-image">${product.emoji}</div>
+                <div>
+                    <h3>${product.name}</h3>
+                    <p class="details-category">${product.category}</p>
+                </div>
+            </div>
+            <p class="details-description">${product.description}</p>
+            <p class="details-price">Price: $${product.price.toFixed(2)}</p>
+            <button class="details-add-to-cart-btn">Add to Cart</button>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+
+    const closeModal = () => {
+        modal.remove();
+        document.body.style.overflow = 'auto';
+    };
+
+    modal.querySelector('.details-close').addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    modal.querySelector('.details-add-to-cart-btn').addEventListener('click', () => {
+        addToCart(product);
+        closeModal();
+    });
 }
 
 // -------- Shopping Cart Functions --------
